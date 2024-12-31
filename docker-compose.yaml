@@ -1,0 +1,65 @@
+volumes:
+  ollama_vol:
+    driver: local
+  anythingllm_vol:
+    driver: local
+
+networks:
+  panic:
+    driver: bridge
+
+services:
+
+  ollama:
+    image: ollama/ollama:latest
+    environment:
+      - OLLAMA_DIR=${OLLAMA_DIR}
+    volumes:
+      - ollama_vol:${OLLAMA_DIR}  # Persistent storage for models and settings
+    container_name: ollama
+    restart: always
+    ports:
+      - "11434:11434"  # Expose Ollama's API
+    networks:
+      - panic
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 2G
+    # healthcheck:
+      # test:
+        # [
+          # "CMD-SHELL",
+          # "curl -s -I http://localhost:11434 | grep -q 'HTTP/1.1 302 Found'",
+        # ]
+      # interval: 10s
+      # timeout: 10s
+      # retries: 120
+
+  anything-llm:
+    depends_on:
+      - ollama
+        # condition: service_healthy
+    container_name: archive
+    image: mintplexlabs/anythingllm:latest
+    cap_add:
+      - SYS_ADMIN
+    volumes:
+      - "./archive:/app/server/storage"
+      - "./.env:/app/server/.env"
+      - "./collector/hotdir/:/app/collector/hotdir"
+      - "./collector/outputs/:/app/collector/outputs"
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      - STORAGE_LOCATION=${STORAGE_LOCATION}
+      - OLLAMA_SERVICE_URL=http://ollama:11434
+      - LLM_SERVICE_URL=http://host.docker.internal:3001
+    env_file:
+      - .env
+    networks:
+      - panic
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
