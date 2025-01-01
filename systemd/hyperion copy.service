@@ -1,0 +1,15 @@
+[Unit]
+Description=Hyperion Archive Docker Compose Application
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=exec
+WorkingDirectory=/home/ephemeralrogue/Documents/github/hyperion-archive/
+ExecStart=/usr/libexec/docker/cli-plugins/docker-compose up -d
+ExecStop=/usr/libexec/docker/cli-plugins/docker-compose down
+Restart=no
+User=ephemeralrogue
+
+[Install]
+WantedBy=multi-user.target

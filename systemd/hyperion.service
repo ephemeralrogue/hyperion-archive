@@ -4,12 +4,17 @@ Requires=docker.service
 After=docker.service
 
 [Service]
-WorkingDirectory=/home/ephemeralrogue/Documents/github/hyperion-archive/[Service]
-ExecStart=/usr/local/bin/docker-compose up
-ExecStop=/usr/local/bin/docker-compose down
+Type=exec
+
+# systemd uses absolute paths.
+# set the path to your compose.yaml and docker compose binary
+WorkingDirectory= # path to compose file
+ExecStart= # path to compose binary/docker-compose up -d
+ExecStop= #path to compose binary/docker-compose down
+
+# set your own restart behavior
 Restart=no
-User=ephemeralrogue
-Group=ephemeralrogue
+User=
 
 [Install]
 WantedBy=multi-user.target
