@@ -48,7 +48,7 @@ services:
       - SYS_ADMIN
     volumes:
       - ./archive:/app/server/storage
-      - ./.env:/app/server/.env:rw
+      - ./.env:/app/server/.env
       - ./collector/hotdir/:/app/collector/hotdir
       - ./collector/outputs/:/app/collector/outputs
     ports:
