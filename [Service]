@@ -1,0 +1,15 @@
+[Unit]
+Description=Docker Compose Application Service
+Requires=docker.service
+After=docker.service
+
+[Service]
+WorkingDirectory=/home/ephemeralrogue/Documents/github/hyperion-archive/[Service]
+ExecStart=/usr/local/bin/docker-compose up
+ExecStop=/usr/local/bin/docker-compose down
+Restart=always
+User=ephemeralrogue
+Group=ephemeralrogue
+
+[Install]
+WantedBy=multi-user.target
