@@ -9,12 +9,9 @@ networks:
     driver: bridge
 
 services:
-  detach: true
 
   ollama:
     image: ollama/ollama:latest
-    # environment:
-    #   - OLLAMA_DIR=${OLLAMA_DIR}
     volumes:
       - ollama_vol:/root/.ollama  # Persistent storage for models and settings
     container_name: ollama
