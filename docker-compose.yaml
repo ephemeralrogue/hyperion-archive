@@ -46,11 +46,9 @@ services:
     image: mintplexlabs/anythingllm:latest
     cap_add:
       - SYS_ADMIN
-    user:
-      - ${UID}:${GID}
     volumes:
       - ./archive:/app/server/storage
-      - ./.env:/app/server/.env
+      - ./.env:/app/server/.env:rw
       - ./collector/hotdir/:/app/collector/hotdir
       - ./collector/outputs/:/app/collector/outputs
     ports:
