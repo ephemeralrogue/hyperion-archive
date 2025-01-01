@@ -1,5 +1,5 @@
 [Unit]
-Description=Docker Compose Application Service
+Description=Hyperion Archive Docker Compose Application
 Requires=docker.service
 After=docker.service
 
@@ -7,7 +7,7 @@ After=docker.service
 WorkingDirectory=/home/ephemeralrogue/Documents/github/hyperion-archive/[Service]
 ExecStart=/usr/local/bin/docker-compose up
 ExecStop=/usr/local/bin/docker-compose down
-Restart=always
+Restart=no
 User=ephemeralrogue
 Group=ephemeralrogue
 
