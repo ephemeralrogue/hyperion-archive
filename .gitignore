@@ -1,5 +1,6 @@
 .env
 .env.local
+.vscode/
 
 # Anything LLM data. This should be backed up privately.
 archive/
