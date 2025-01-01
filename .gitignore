@@ -1,5 +1,6 @@
 .env
 .env.local
+
+# Anything LLM data. This should be backed up privately.
 archive/
-.ollama/
 collector/

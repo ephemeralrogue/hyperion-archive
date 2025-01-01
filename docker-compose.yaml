@@ -17,15 +17,15 @@ services:
     volumes:
       - ollama_vol:${OLLAMA_DIR}  # Persistent storage for models and settings
     container_name: ollama
-    restart: always
+    restart: no
     ports:
-      - "11434:11434"  # Expose Ollama's API
+      - 11434:11434  # Expose Ollama's API
     networks:
       - panic
     deploy:
       resources:
         limits:
-          memory: 2G
+          memory: 4G
         reservations:
           memory: 2G
     # healthcheck:
@@ -38,28 +38,27 @@ services:
       # timeout: 10s
       # retries: 120
 
-  anything-llm:
+  archive:
     depends_on:
       - ollama
         # condition: service_healthy
-    container_name: archive
+    container_name: LOADERBOT
     image: mintplexlabs/anythingllm:latest
     cap_add:
       - SYS_ADMIN
     volumes:
-      - "./archive:/app/server/storage"
-      - "./.env:/app/server/.env"
-      - "./collector/hotdir/:/app/collector/hotdir"
-      - "./collector/outputs/:/app/collector/outputs"
+      - ./archive:/app/server/storage
+      - ./.env:/app/server/.env
+      - ./collector/hotdir/:/app/collector/hotdir
+      - ./collector/outputs/:/app/collector/outputs
     ports:
-      - "127.0.0.1:3001:3001"
+      - 3001:3001
     environment:
       - STORAGE_LOCATION=${STORAGE_LOCATION}
-      - OLLAMA_SERVICE_URL=http://ollama:11434
-      - LLM_SERVICE_URL=http://host.docker.internal:3001
+      - OLLAMA_SERVICE_URL=${OLLAMA_BASE_PATH}
+      - LLM_SERVICE_URL=${LLM_SERVICE_URL}
+      - LLM_PROVIDER=${LLM_PROVIDER}
     env_file:
       - .env
     networks:
       - panic
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
