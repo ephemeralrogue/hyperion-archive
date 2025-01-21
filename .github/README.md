@@ -1,4 +1,33 @@
-# Hyperion Archive
+<h1 align="center">Hyperion Archive</h1>
+
+<p align="center">
+    <br>
+    <img
+        src="../assets/hyperion-archive-emblem.png" 
+        alt="hyperion-archive-emblem"
+        width="120px"
+    />
+    <br>
+    <br>
+    <i>
+        ephemeralrogue.bookworm is an Ansible collection written to provision
+        <br> Debian Bookworm virtual machines locally.
+    </i>
+    <br>
+</p>
+
+<p align="center">
+    <a href="https://anythingllm.com/">AnythingLLM</a>
+    •
+    <a href="https://ollama.com/">Ollama</a>
+    •
+    <a href="https://discord.gg/nh7mqGEfbw">{ e } Discord</a>
+    •
+    <a href="https://blog.ephemeralrogue.xyz/detour-through-ansible#heading-ephemeralroguebookworm">Project Writeup</a>
+    <br>
+</p>
+<hr>
+<br>
 
 The Hyperion Archive is a simple [AnythingLLM] setup using [Ollama] as the NLP 
 provider. The app runs via [Docker Compose], spinning up both the 
@@ -6,6 +35,14 @@ provider. The app runs via [Docker Compose], spinning up both the
 of setup. The app is designed to be entirely contained within the directory 
 the compose file exists.
 
+<a id='contents'></a>
+## Contents
+
+- [Running the Docker Compose File](#compose)
+- [Setting Up a Systemd Service](#systemd)
+- [Future Considerations](#future)
+
+<a id='compose'></a>
 ## Running the Docker Compose File
 
 To run the enclosed Docker Compose file, follow these steps:
@@ -52,6 +89,9 @@ To run the enclosed Docker Compose file, follow these steps:
     docker compose down # or docker-compose down
     ```
 
+[Back to Contents](#contents)
+
+<a id='systemd'></a>
 ## Setting Up a Systemd Service
 
 If you are running this app on a Linux distro that ships with systemd, you 
@@ -59,12 +99,18 @@ can use the included service template in the systemd directory to set up a
 systemd service. This way, you can avoid having to navigate to the project 
 directory every time you want to spin up the app. Simply setup the service, 
 start the service when you want to use the app, and stop the service when 
-you want to shut it down.
+you want to shut it down. A README is included in the systemd directory to 
+help you set this up.
 
+[Back to Contents](#contents)
+
+<a id='future'></a>
 ## Future Considerations
 
 As more NLP tools become available and more accessible, this project 
 will likely expand with additional services and use-cases.
+
+[Back to Contents](#contents)
 
 <!-- links section -->
 [AnythingLLM]: https://anythingllm.com/
@@ -72,3 +118,4 @@ will likely expand with additional services and use-cases.
 [Docker Compose]: https://docs.docker.com/compose/
 [Ollama container]: https://github.com/ollama/ollama/blob/main/docs/docker.md#amd-gpu
 [AnythingLLM container]: https://docs.anythingllm.com/installation-docker/local-docker
+
