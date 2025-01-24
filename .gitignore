@@ -6,3 +6,6 @@
 # Anything LLM data. This should be backed up privately.
 archive/
 collector/
+
+# KICS Scan
+results.json

@@ -12,12 +12,20 @@ services:
 
   ollama:
     image: ollama/ollama:latest
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
     volumes:
-      - ollama_vol:/root/.ollama  # Persistent storage for models and settings
+      - type: volume
+        source: ollama_vol
+        target: /root/.ollama
+        volume:
+          nocopy: true
     container_name: ollama
     restart: no
     ports:
-      - 11434:11434  # Expose Ollama's API
+      - "127.0.0.1:11434:11434"
     networks:
       - panic
     deploy:
@@ -26,31 +34,37 @@ services:
           memory: 4G
         reservations:
           memory: 2G
-    # healthcheck:
-      # test:
-        # [
-          # "CMD-SHELL",
-          # "curl -s -I http://localhost:11434 | grep -q 'HTTP/1.1 302 Found'",
-        # ]
-      # interval: 10s
-      # timeout: 10s
-      # retries: 120
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-s",
+          "-I",
+          "http://localhost:11434 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
 
   archive:
     depends_on:
-      - ollama
-        # condition: service_healthy
+      ollama:
+        condition: service_started
     container_name: LOADERBOT
     image: mintplexlabs/anythingllm:latest
-    cap_add:
-      - SYS_ADMIN
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
     volumes:
       - ./archive:/app/server/storage
       - ./.env:/app/server/.env
       - ./collector/hotdir/:/app/collector/hotdir
       - ./collector/outputs/:/app/collector/outputs
     ports:
-      - 3001:3001
+      - "127.0.0.1:3001:3001"
     environment:
       - STORAGE_LOCATION=${STORAGE_LOCATION}
       - OLLAMA_SERVICE_URL=${OLLAMA_BASE_PATH}
@@ -60,3 +74,15 @@ services:
       - .env
     networks:
       - panic
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:3001"
+        ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
