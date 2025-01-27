@@ -7,7 +7,8 @@
             {
                 "quoteType": "single"
             }
-        ]
+        ],
+        "service-image-require-explicit-tag": 0
     },
     "quiet": false,
     "debug": true
