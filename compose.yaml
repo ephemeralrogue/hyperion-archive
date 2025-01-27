@@ -1,39 +1,21 @@
-volumes:
-  ollama_vol:
-    driver: local
-  anythingllm_vol:
-    driver: local
-
-networks:
-  panic:
-    driver: bridge
+name: Hyperion Archive
 
 services:
 
   ollama:
     image: ollama/ollama:latest
-    cap_drop:
-      - ALL
-    security_opt:
-      - no-new-privileges:true
+    container_name: ollama
     volumes:
       - type: volume
         source: ollama_vol
         target: /root/.ollama
         volume:
           nocopy: true
-    container_name: ollama
-    restart: no
     ports:
       - "127.0.0.1:11434:11434"
     networks:
       - panic
-    deploy:
-      resources:
-        limits:
-          memory: 4G
-        reservations:
-          memory: 2G
+    restart: no
     healthcheck:
       test:
         [
@@ -46,25 +28,28 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
-
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G
+    security_opt:
+      - no-new-privileges:true
 
   archive:
+    image: mintplexlabs/anythingllm:latest
+    container_name: LOADERBOT
     depends_on:
       ollama:
         condition: service_started
-    container_name: LOADERBOT
-    image: mintplexlabs/anythingllm:latest
-    cap_drop:
-      - ALL
-    security_opt:
-      - no-new-privileges:true
     volumes:
       - ./archive:/app/server/storage
       - ./.env:/app/server/.env
       - ./collector/hotdir/:/app/collector/hotdir
       - ./collector/outputs/:/app/collector/outputs
-    ports:
-      - "127.0.0.1:3001:3001"
     environment:
       - STORAGE_LOCATION=${STORAGE_LOCATION}
       - OLLAMA_SERVICE_URL=${OLLAMA_BASE_PATH}
@@ -72,6 +57,8 @@ services:
       - LLM_PROVIDER=${LLM_PROVIDER}
     env_file:
       - .env
+    ports:
+      - "127.0.0.1:3001:3001"
     networks:
       - panic
     healthcheck:
@@ -86,3 +73,17 @@ services:
       timeout: 30s
       retries: 5
       start_period: 30s
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  panic:
+    driver: bridge
+
+volumes:
+  ollama_vol:
+    driver: local
+  anythingllm_vol:
+    driver: local
