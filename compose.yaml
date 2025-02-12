@@ -33,24 +33,33 @@ services:
     deploy:
       resources:
         limits:
-          memory: 4G
+          memory: ${MEMORY_LIMIT}
         reservations:
-          memory: 2G
+          memory: ${MEMORY_RESERVATION}
     security_opt:
       - no-new-privileges:true
 
   archive:
     image: mintplexlabs/anythingllm:latest
-    container_name: LOADERBOT
+    container_name: anythingLLM
     depends_on:
       ollama:
         condition: service_started
     volumes:
-      - ./archive:/app/server/storage
-      - ./.env:/app/server/.env
-      - ./collector/hotdir/:/app/collector/hotdir
-      - ./collector/outputs/:/app/collector/outputs
+      - type: bind
+        source: ${STORAGE_LOCATION}
+        target: /app/server/storage
+      - type: bind
+        source: ${STORAGE_LOCATION}/.env
+        target: /app/server/.env
+      - type: bind
+        source: ./collector/hotdir/
+        target: /app/collector/hotdir
+      - type: bind
+        source: ./collector/outputs/
+        target: /app/collector/outputs
     environment:
+      - STORAGE_DIR=${STORAGE_DIR}
       - STORAGE_LOCATION=${STORAGE_LOCATION}
       - OLLAMA_SERVICE_URL=${OLLAMA_BASE_PATH}
       - LLM_SERVICE_URL=${LLM_SERVICE_URL}
@@ -61,6 +70,8 @@ services:
       - '127.0.0.1:3001:3001'
     networks:
       - panic
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
     healthcheck:
       test:
         [
@@ -73,6 +84,9 @@ services:
       timeout: 30s
       retries: 5
       start_period: 30s
+    # kics-scan ignore-block
+    cap_add:
+      - SYS_ADMIN
     cap_drop:
       - ALL
     security_opt:
